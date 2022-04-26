@@ -2,7 +2,7 @@ package com.udacity.catpoint.security.application;
 
 import com.udacity.catpoint.security.data.PretendDatabaseSecurityRepositoryImpl;
 import com.udacity.catpoint.security.data.SecurityRepository;
-import com.udacity.catpoint.image.FakeImageService;
+import com.udacity.catpoint.image.service.FakeImageService;
 import com.udacity.catpoint.security.service.SecurityService;
 //import com.udacity.catpoint.security.service.FakeImageService;
 import net.miginfocom.swing.MigLayout;
