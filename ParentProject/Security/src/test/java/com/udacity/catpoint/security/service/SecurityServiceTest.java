@@ -82,7 +82,6 @@ public class SecurityServiceTest {
 
     private Set<Sensor> getSensors(boolean active, int count){
         String randomString = UUID.randomUUID().toString();
-
         Set<Sensor> sensors = new HashSet<>();
         for (int i = 0; i <= count; i++){
             sensors.add(new Sensor(randomString, SensorType.DOOR));
@@ -92,7 +91,6 @@ public class SecurityServiceTest {
     }
 
 
-    // 1
     @Test
     void ifSystemArmedAndSensorActivated_changeStatusToPending() {
         when(securityRepository.getArmingStatus()).thenReturn(ArmingStatus.ARMED_HOME);
@@ -100,7 +98,7 @@ public class SecurityServiceTest {
         securityService.changeSensorActivationStatus(sensor, true);
         verify(securityRepository, times(1)).setAlarmStatus(AlarmStatus.PENDING_ALARM);
     }
-    // 2
+
     @Test
     void ifSystemArmedAndSensorActivatedAndPendingState_changeStatusToAlarm() {
         when(securityRepository.getArmingStatus()).thenReturn(ArmingStatus.ARMED_HOME);
@@ -108,9 +106,9 @@ public class SecurityServiceTest {
         securityService.changeSensorActivationStatus(sensor, true);
         verify(securityRepository, times(1)).setAlarmStatus(AlarmStatus.ALARM);
     }
-    // 3
 
-    @Test //covers 2
+
+    @Test
     void changeAlarmStatus_alarmAlreadyPendingAndSensorActivated_alarmStatusAlarm(){
         when(securityService.getAlarmStatus()).thenReturn(AlarmStatus.PENDING_ALARM);
         securityService.changeSensorActivationStatus(sensor, true);
