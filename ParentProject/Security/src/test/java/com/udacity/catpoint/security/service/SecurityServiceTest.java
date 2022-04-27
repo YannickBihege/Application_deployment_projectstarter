@@ -14,15 +14,36 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+
+import com.udacity.catpoint.image.service.ImageService;
+import com.udacity.catpoint.security.data.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import static org.mockito.Mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.awt.image.BufferedImage;
+import java.util.*;
+import java.util.stream.Stream;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -70,16 +91,6 @@ public class SecurityServiceTest {
         return sensors;
     }
 
-    @ParameterizedTest //covers 1
-    @EnumSource(value = ArmingStatus.class, names = {"ARMED_HOME", "ARMED_AWAY"})
-    void changeAlarmStatus_alarmArmedAndSensorActivated_alarmStatusPending(ArmingStatus armingStatus){
-        when(securityService.getArmingStatus()).thenReturn(armingStatus);
-        when(securityService.getAlarmStatus()).thenReturn(AlarmStatus.NO_ALARM);
-        securityService.changeSensorActivationStatus(sensor, true);
-        ArgumentCaptor<AlarmStatus> captor = ArgumentCaptor.forClass(AlarmStatus.class);
-        verify(securityRepository, atMostOnce()).setAlarmStatus(captor.capture());
-        assertEquals(captor.getValue(), AlarmStatus.PENDING_ALARM);
-    }
 
     // 1
     @Test
@@ -98,6 +109,16 @@ public class SecurityServiceTest {
         verify(securityRepository, times(1)).setAlarmStatus(AlarmStatus.ALARM);
     }
     // 3
+
+    @Test //covers 2
+    void changeAlarmStatus_alarmAlreadyPendingAndSensorActivated_alarmStatusAlarm(){
+        when(securityService.getAlarmStatus()).thenReturn(AlarmStatus.PENDING_ALARM);
+        securityService.changeSensorActivationStatus(sensor, true);
+        verify(securityRepository, atMost(2)).setAlarmStatus(AlarmStatus.ALARM); //first call up
+    }
+
+
+
 
 
 
