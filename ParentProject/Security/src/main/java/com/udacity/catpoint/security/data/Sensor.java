@@ -15,6 +15,7 @@ public class Sensor implements Comparable<Sensor> {
     private Boolean active;
     private SensorType sensorType;
 
+    public Sensor(){} // Added default constructor to make use of reflection
     public Sensor(String name, SensorType sensorType) {
         this.name = name;
         this.sensorType = sensorType;
