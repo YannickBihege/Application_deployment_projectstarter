@@ -109,6 +109,12 @@
               <artifactId>junit-jupiter-engine</artifactId>
               <version>5.8.2</version>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-assembly-plugin -->
+            <dependency>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <version>3.3.0</version>
+            </dependency>
           </dependencies>
           <configuration>
             <argLine>
@@ -137,6 +143,7 @@
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
         </plugin>
+
       </plugins>
     </pluginManagement>
   </build>

@@ -94,6 +94,14 @@
                     <target>14</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.8</version>
+                <configuration>
+<!-- TODO -->
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
