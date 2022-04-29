@@ -42,7 +42,13 @@
             <version>23.0</version>
         </dependency>
 
-
+        <!--
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+        -->
     </dependencies>
 
     <build>
@@ -94,12 +100,31 @@
                     <target>14</target>
                 </configuration>
             </plugin>
+
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.3.8</version>
+                <version>3.3.0</version>
                 <configuration>
-<!-- TODO -->
+                    <archive>
+                        <manifest>
+                            <mainClass>
+                                com.udacity.catpoint.security.application.CatpointApp
+                            </mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                    <descriptorRefs>jar-with-dependencies</descriptorRefs>
+                    </descriptorRefs>
                 </configuration>
+                <executions>
+                <execution>
+                    <id>make-assembly</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>single</goal>
+                    </goals>
+                </execution>
+                </executions>
             </plugin>
 
         </plugins>
