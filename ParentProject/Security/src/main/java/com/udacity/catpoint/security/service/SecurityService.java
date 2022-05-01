@@ -12,6 +12,11 @@ import com.udacity.catpoint.image.service.FakeImageService;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.stream.Collectors;
 
 /**
  * Service that receives information about changes to the security system. Responsible for
@@ -33,6 +38,33 @@ public class SecurityService {
     }
 
     /**
+     *
+
+    Set<Sensor> getActiveSensors(){
+        return getSensors()
+                .stream()
+                .filter(Sensor::getActive)
+                .collect(Collectors.toSet());
+    }
+    private void setFalseActivationStatusForSensors(Set<Sensor> sensors) {
+        ConcurrentSkipListSet<Sensor> cloned = new ConcurrentSkipListSet<>(sensors);
+        Iterator<Sensor> sensorIterator = cloned.iterator();
+        //avoid the concurrentModification exception here
+        while (sensorIterator.hasNext()){
+            Sensor sensor = sensorIterator.next();
+            sensor.setActive(true); //sensor can only be deactivated if it was active before
+            changeSensorActivationStatus(sensor, false);
+        }
+    }
+
+    boolean systemArmed(ArmingStatus armingStatus){
+        return List.of(ArmingStatus.ARMED_HOME, ArmingStatus.ARMED_AWAY)
+                .contains(armingStatus);
+    }
+     * @return
+     */
+
+    /**
      * Sets the current arming status for the system. Changing the arming status
      * may update both the alarm status.
      * @param armingStatus
@@ -41,7 +73,22 @@ public class SecurityService {
         if(armingStatus == ArmingStatus.DISARMED) {
             setAlarmStatus(AlarmStatus.NO_ALARM);
         }
+        // UPDATE0105
+        /**
+         *
+        else if (systemArmed(armingStatus)){
+            setFalseActivationStatusForSensors(this.getActiveSensors());
+        }
+         */
+        // Fixing
+        else {
+            ConcurrentSkipListSet<Sensor> sensors = new ConcurrentSkipListSet<>(getSensors());
+            sensors.forEach(sensor -> changeSensorActivationStatus(sensor, false));
+        }
         securityRepository.setArmingStatus(armingStatus);
+        statusListeners.forEach(sl -> sl.sensorStatusChanged());
+
+       // securityRepository.setArmingStatus(armingStatus);
     }
 
     /**
@@ -108,11 +155,27 @@ public class SecurityService {
      * @param sensor
      * @param active
      */
+
+    /**
+     *public void changeSensorActivationStatus(Sensor sensor, Boolean active) {
+     *         if(!sensor.getActive() && active) {
+     *             handleSensorActivated();
+     *         } else if (sensor.getActive() && !active) {
+     *             handleSensorDeactivated();
+     *         }
+     *         sensor.setActive(active);
+     *         securityRepository.updateSensor(sensor);
+     *     }
+     *
+     */
     public void changeSensorActivationStatus(Sensor sensor, Boolean active) {
-        if(!sensor.getActive() && active) {
-            handleSensorActivated();
-        } else if (sensor.getActive() && !active) {
-            handleSensorDeactivated();
+        AlarmStatus actualAlarmStatus = securityRepository.getAlarmStatus();
+        if(actualAlarmStatus != AlarmStatus.ALARM) {
+            if(active) {
+                handleSensorActivated();
+            } else if (sensor.getActive()) {
+                handleSensorDeactivated();
+            }
         }
         sensor.setActive(active);
         securityRepository.updateSensor(sensor);

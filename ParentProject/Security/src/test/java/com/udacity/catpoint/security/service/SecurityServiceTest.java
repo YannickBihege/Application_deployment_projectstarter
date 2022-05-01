@@ -277,7 +277,7 @@ public class SecurityServiceTest {
         securityService.setArmingStatus(status);
 
         securityService.getSensors().forEach(sensor -> {
-            assertTrue(sensor.getActive());
+            assertFalse(sensor.getActive());
         });
     }
 
