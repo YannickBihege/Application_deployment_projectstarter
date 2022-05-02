@@ -31,6 +31,8 @@ public class SecurityService {
     private ImageService imageService;
     private SecurityRepository securityRepository;
     private Set<StatusListener> statusListeners = new HashSet<>();
+    // Detection requirement
+    private Boolean catIsDetacted = false;
 
     public SecurityService(SecurityRepository securityRepository, ImageService imageService) {
         this.securityRepository = securityRepository;
@@ -38,72 +40,39 @@ public class SecurityService {
     }
 
     /**
-     *
-
-    Set<Sensor> getActiveSensors(){
-        return getSensors()
-                .stream()
-                .filter(Sensor::getActive)
-                .collect(Collectors.toSet());
-    }
-    private void setFalseActivationStatusForSensors(Set<Sensor> sensors) {
-        ConcurrentSkipListSet<Sensor> cloned = new ConcurrentSkipListSet<>(sensors);
-        Iterator<Sensor> sensorIterator = cloned.iterator();
-        //avoid the concurrentModification exception here
-        while (sensorIterator.hasNext()){
-            Sensor sensor = sensorIterator.next();
-            sensor.setActive(true); //sensor can only be deactivated if it was active before
-            changeSensorActivationStatus(sensor, false);
-        }
-    }
-
-    boolean systemArmed(ArmingStatus armingStatus){
-        return List.of(ArmingStatus.ARMED_HOME, ArmingStatus.ARMED_AWAY)
-                .contains(armingStatus);
-    }
-     * @return
-     */
-
-    /**
      * Sets the current arming status for the system. Changing the arming status
      * may update both the alarm status.
      * @param armingStatus
      */
     public void setArmingStatus(ArmingStatus armingStatus) {
+        if(catIsDetacted && armingStatus == ArmingStatus.DISARMED) {
+            setAlarmStatus(AlarmStatus.NO_ALARM);
+        }
         if(armingStatus == ArmingStatus.DISARMED) {
             setAlarmStatus(AlarmStatus.NO_ALARM);
         }
-        // UPDATE0105
-        /**
-         *
-        else if (systemArmed(armingStatus)){
-            setFalseActivationStatusForSensors(this.getActiveSensors());
-        }
-         */
-        // Fixing
         else {
             ConcurrentSkipListSet<Sensor> sensors = new ConcurrentSkipListSet<>(getSensors());
             sensors.forEach(sensor -> changeSensorActivationStatus(sensor, false));
         }
         securityRepository.setArmingStatus(armingStatus);
         statusListeners.forEach(sl -> sl.sensorStatusChanged());
-
-       // securityRepository.setArmingStatus(armingStatus);
     }
 
     /**
      * Internal method that handles alarm status changes based on whether
      * the camera currently shows a cat.
-     * @param cat True if a cat is detected, otherwise false.
+     * @param aBooleancat True if a cat is detected, otherwise false.
      */
-    private void catDetected(Boolean cat) {
-        if(cat && getArmingStatus() == ArmingStatus.ARMED_HOME) {
+    private void catDetected(Boolean aBooleancat) {
+        catIsDetacted = aBooleancat;
+        
+        if(aBooleancat && getArmingStatus() == ArmingStatus.ARMED_HOME) {
             setAlarmStatus(AlarmStatus.ALARM);
         } else {
             setAlarmStatus(AlarmStatus.NO_ALARM);
         }
-
-        statusListeners.forEach(sl -> sl.catDetected(cat));
+        statusListeners.forEach(sl -> sl.catDetected(aBooleancat));
     }
 
     /**
