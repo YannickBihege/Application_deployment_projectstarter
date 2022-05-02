@@ -11,7 +11,6 @@ import com.udacity.catpoint.image.service.FakeImageService;
 
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +31,7 @@ public class SecurityService {
     private SecurityRepository securityRepository;
     private Set<StatusListener> statusListeners = new HashSet<>();
     // Detection requirement
-    private Boolean catIsDetacted = false;
+    private Boolean catIsDetected = false;
 
     public SecurityService(SecurityRepository securityRepository, ImageService imageService) {
         this.securityRepository = securityRepository;
@@ -45,11 +44,21 @@ public class SecurityService {
      * @param armingStatus
      */
     public void setArmingStatus(ArmingStatus armingStatus) {
-        if(catIsDetacted && armingStatus == ArmingStatus.DISARMED) {
+        if(catIsDetected && armingStatus == ArmingStatus.DISARMED) {
             setAlarmStatus(AlarmStatus.NO_ALARM);
         }
         if(armingStatus == ArmingStatus.DISARMED) {
             setAlarmStatus(AlarmStatus.NO_ALARM);
+        }
+        // If the system is armed, reset all sensors to inactive
+        if(armingStatus == ArmingStatus.ARMED_HOME || armingStatus == ArmingStatus.ARMED_AWAY ){
+            ConcurrentSkipListSet<Sensor> sensors = new ConcurrentSkipListSet<>(getSensors());
+            sensors.forEach(sensor -> changeSensorActivationStatus(sensor, false));
+        }
+
+        // If the system is armed-home while the camera shows a cat, set the alarm status to alarm.
+        if(armingStatus == ArmingStatus.ARMED_HOME && catIsDetected) {
+            setAlarmStatus(AlarmStatus.ALARM);
         }
         else {
             ConcurrentSkipListSet<Sensor> sensors = new ConcurrentSkipListSet<>(getSensors());
@@ -58,6 +67,11 @@ public class SecurityService {
         securityRepository.setArmingStatus(armingStatus);
         statusListeners.forEach(sl -> sl.sensorStatusChanged());
     }
+    private boolean allSensorsInactive() {
+        return getSensors()
+                .stream()
+                .noneMatch(Sensor::getActive);
+    }
 
     /**
      * Internal method that handles alarm status changes based on whether
@@ -65,11 +79,14 @@ public class SecurityService {
      * @param aBooleancat True if a cat is detected, otherwise false.
      */
     private void catDetected(Boolean aBooleancat) {
-        catIsDetacted = aBooleancat;
+        catIsDetected = aBooleancat;
         
         if(aBooleancat && getArmingStatus() == ArmingStatus.ARMED_HOME) {
             setAlarmStatus(AlarmStatus.ALARM);
-        } else {
+        }
+        // If the camera image does not contain a cat, change the status to no alarm as
+        // long as the sensors are not active.
+        else if(!aBooleancat ) {
             setAlarmStatus(AlarmStatus.NO_ALARM);
         }
         statusListeners.forEach(sl -> sl.catDetected(aBooleancat));
@@ -123,19 +140,6 @@ public class SecurityService {
      * Change the activation status for the specified sensor and update alarm status if necessary.
      * @param sensor
      * @param active
-     */
-
-    /**
-     *public void changeSensorActivationStatus(Sensor sensor, Boolean active) {
-     *         if(!sensor.getActive() && active) {
-     *             handleSensorActivated();
-     *         } else if (sensor.getActive() && !active) {
-     *             handleSensorDeactivated();
-     *         }
-     *         sensor.setActive(active);
-     *         securityRepository.updateSensor(sensor);
-     *     }
-     *
      */
     public void changeSensorActivationStatus(Sensor sensor, Boolean active) {
         AlarmStatus actualAlarmStatus = securityRepository.getAlarmStatus();
