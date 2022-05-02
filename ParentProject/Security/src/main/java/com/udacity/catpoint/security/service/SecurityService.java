@@ -86,7 +86,7 @@ public class SecurityService {
         }
         // If the camera image does not contain a cat, change the status to no alarm as
         // long as the sensors are not active.
-        else if(!aBooleancat ) {
+        else if(!aBooleancat && allSensorsInactive() ) {
             setAlarmStatus(AlarmStatus.NO_ALARM);
         }
         statusListeners.forEach(sl -> sl.catDetected(aBooleancat));
