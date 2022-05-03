@@ -73,6 +73,10 @@ public class SecurityService {
                 .noneMatch(Sensor::getActive);
     }
 
+    private boolean getAllSensorsFromState(boolean state) {
+        return getSensors().stream().allMatch(sensor -> sensor.getActive() == state);
+    }
+
     /**
      * Internal method that handles alarm status changes based on whether
      * the camera currently shows a cat.
@@ -80,13 +84,21 @@ public class SecurityService {
      */
     private void catDetected(Boolean aBooleancat) {
         catIsDetected = aBooleancat;
-        
+
         if(aBooleancat && getArmingStatus() == ArmingStatus.ARMED_HOME) {
             setAlarmStatus(AlarmStatus.ALARM);
         }
         // If the camera image does not contain a cat, change the status to no alarm as
         // long as the sensors are not active.
+        /*
         else if(!aBooleancat && allSensorsInactive() ) {
+            setAlarmStatus(AlarmStatus.NO_ALARM);
+        }
+        */
+        else if(!aBooleancat && getAllSensorsFromState(false) ) {
+            setAlarmStatus(AlarmStatus.NO_ALARM);
+        }
+        else{
             setAlarmStatus(AlarmStatus.NO_ALARM);
         }
         statusListeners.forEach(sl -> sl.catDetected(aBooleancat));
@@ -136,6 +148,18 @@ public class SecurityService {
         }
     }
 
+    public void changeSensorActivationStatus(Sensor sensor) {
+        AlarmStatus actualAlarmStatus = this.getAlarmStatus();
+        ArmingStatus actualArmingStatus = this.getArmingStatus();
+
+        if (actualAlarmStatus == AlarmStatus.PENDING_ALARM && !sensor.getActive()) {
+            handleSensorDeactivated();
+        } else if (actualAlarmStatus == AlarmStatus.ALARM && actualArmingStatus == ArmingStatus.DISARMED) {
+            handleSensorDeactivated();
+        }
+        securityRepository.updateSensor(sensor);
+    }
+
     /**
      * Change the activation status for the specified sensor and update alarm status if necessary.
      * @param sensor
@@ -160,8 +184,13 @@ public class SecurityService {
      * @param currentCameraImage
      */
     public void processImage(BufferedImage currentCameraImage) {
-        catDetected(imageService.imageContainsCat(currentCameraImage, 50.0f));
-    }
+        if(currentCameraImage == null){
+
+        }
+        else if(currentCameraImage != null) {
+            catDetected(imageService.imageContainsCat(currentCameraImage, 50.0f));
+        }
+        }
 
     public AlarmStatus getAlarmStatus() {
         return securityRepository.getAlarmStatus();
