@@ -23,6 +23,9 @@ import java.util.stream.Collectors;
  * class you will be writing unit tests for.
  */
 public class SecurityService {
+    /**
+     * I updated the code based on the answers given on knowledge.
+     */
 
     private ImageService imageService;
     private SecurityRepository securityRepository;
@@ -80,6 +83,7 @@ public class SecurityService {
         statusListeners.forEach(sl -> sl.notify(status));
     }
 
+
     /**
      * -------------------Behavioral method  CAT DETECTION-------------------------------------------
      */
@@ -95,6 +99,7 @@ public class SecurityService {
         }
         statusListeners.forEach(sl -> sl.catDetected(cat));
     }
+
 
     /**
      * ---------------------Behavioral method ARMING STATUS-------------------------------------------------------
@@ -120,7 +125,7 @@ public class SecurityService {
 
 
     /**
-     * -------------------Behavioral methodS handle SENSOR activation and deactivation-------------------------------------------
+     * -------------------Behavioral methodS handle SENSOR activation and deactivation and ALARM STATUS-------------------------------------------
      */
     private void handleSensorActivated() {
         if(securityRepository.getArmingStatus() == ArmingStatus.DISARMED) {
@@ -137,6 +142,11 @@ public class SecurityService {
             case ALARM -> setAlarmStatus(AlarmStatus.PENDING_ALARM);
         }
     }
+
+
+    /**
+     * -------------------Behavioral methods change ACTIVATION STATUS-------------------------------------------
+     */
     public void changeSensorActivationStatus(Sensor sensor) {
         AlarmStatus actualAlarmStatus = this.getAlarmStatus();
         ArmingStatus actualArmingStatus = this.getArmingStatus();
@@ -148,14 +158,11 @@ public class SecurityService {
         }
         securityRepository.updateSensor(sensor);
     }
-
     /**
-     * Change the activation status for the specified sensor and update alarm status if necessary.
      * @param sensor @param active
      */
     public void changeSensorActivationStatus(Sensor sensor, Boolean active) {
         AlarmStatus actualAlarmStatus = securityRepository.getAlarmStatus();
-
         if(actualAlarmStatus != AlarmStatus.ALARM) {
             if(active) {
                 handleSensorActivated();
