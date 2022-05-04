@@ -185,6 +185,10 @@ public class SecurityService {
      */
     public void processImage(BufferedImage currentCameraImage) {
         if(currentCameraImage == null){
+            // Nothing required
+            setAlarmStatus(AlarmStatus.NO_ALARM);
+            //
+            securityRepository.updateSensor(sensor);
 
         }
         else if(currentCameraImage != null) {
