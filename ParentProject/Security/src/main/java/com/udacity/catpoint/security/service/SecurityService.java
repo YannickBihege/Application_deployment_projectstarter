@@ -43,20 +43,22 @@ public class SecurityService {
      * may update both the alarm status.
      * @param armingStatus
      */
+    /*
     public void setArmingStatus(ArmingStatus armingStatus) {
         if(catIsDetected && armingStatus == ArmingStatus.DISARMED) {
             setAlarmStatus(AlarmStatus.NO_ALARM);
         }
+        // requirement 9 If the system is disarmed, set the status to no alarm.
         if(armingStatus == ArmingStatus.DISARMED) {
             setAlarmStatus(AlarmStatus.NO_ALARM);
         }
-        // If the system is armed, reset all sensors to inactive
+        // requirement 10 If the system is armed, reset all sensors to inactive
         if(armingStatus == ArmingStatus.ARMED_HOME || armingStatus == ArmingStatus.ARMED_AWAY ){
             ConcurrentSkipListSet<Sensor> sensors = new ConcurrentSkipListSet<>(getSensors());
             sensors.forEach(sensor -> changeSensorActivationStatus(sensor, false));
         }
 
-        // If the system is armed-home while the camera shows a cat, set the alarm status to alarm.
+        // requirement 11 If the system is armed-home while the camera shows a cat, set the alarm status to alarm.
         if(armingStatus == ArmingStatus.ARMED_HOME && catIsDetected) {
             setAlarmStatus(AlarmStatus.ALARM);
         }
@@ -67,6 +69,24 @@ public class SecurityService {
         securityRepository.setArmingStatus(armingStatus);
         statusListeners.forEach(sl -> sl.sensorStatusChanged());
     }
+
+     */
+
+    public void setArmingStatus(ArmingStatus armingStatus) {
+        if(catIsDetected && armingStatus == ArmingStatus.ARMED_HOME){
+            setAlarmStatus(AlarmStatus.ALARM);
+        }
+        if(armingStatus == ArmingStatus.DISARMED) {
+            setAlarmStatus(AlarmStatus.NO_ALARM);
+        } else {
+            ConcurrentSkipListSet<Sensor> sensors = new ConcurrentSkipListSet<>(getSensors());
+            sensors.forEach(sensor -> changeSensorActivationStatus(sensor, false));
+        }
+        securityRepository.setArmingStatus(armingStatus);
+        statusListeners.forEach(sl -> sl.sensorStatusChanged());
+    }
+
+
     private boolean allSensorsInactive() {
         return getSensors()
                 .stream()
@@ -85,22 +105,18 @@ public class SecurityService {
     private void catDetected(Boolean aBooleancat) {
         catIsDetected = aBooleancat;
 
+        // requirement 7 If the image service identifies an image containing a cat while
+        // the system is armed-home, put the system into alarm status.
         if(aBooleancat && getArmingStatus() == ArmingStatus.ARMED_HOME) {
             setAlarmStatus(AlarmStatus.ALARM);
         }
-        // If the camera image does not contain a cat, change the status to no alarm as
-        // long as the sensors are not active.
-        /*
-        else if(!aBooleancat && allSensorsInactive() ) {
-            setAlarmStatus(AlarmStatus.NO_ALARM);
-        }
-        */
+
+        // requirement 8 If the image service identifies an image that does not contain a cat,
+        // change the status to no alarm as long as the sensors are not active.
         else if(!aBooleancat && getAllSensorsFromState(false) ) {
             setAlarmStatus(AlarmStatus.NO_ALARM);
         }
-        else{
-            setAlarmStatus(AlarmStatus.NO_ALARM);
-        }
+
         statusListeners.forEach(sl -> sl.catDetected(aBooleancat));
     }
 
@@ -148,6 +164,11 @@ public class SecurityService {
         }
     }
 
+    /*
+      According to the knowledge forum.
+      However it is not clear why I should define the very same
+      method with a different parameter list.
+     */
     public void changeSensorActivationStatus(Sensor sensor) {
         AlarmStatus actualAlarmStatus = this.getAlarmStatus();
         ArmingStatus actualArmingStatus = this.getArmingStatus();
@@ -184,13 +205,17 @@ public class SecurityService {
      * @param currentCameraImage
      */
     public void processImage(BufferedImage currentCameraImage) {
+        /*
         if(currentCameraImage == null){
             // Nothing required
-            setAlarmStatus(AlarmStatus.NO_ALARM);
+           // setAlarmStatus(AlarmStatus.NO_ALARM);
         }
         else if(currentCameraImage != null) {
             catDetected(imageService.imageContainsCat(currentCameraImage, 50.0f));
         }
+         */
+        catDetected(imageService.imageContainsCat(currentCameraImage, 50.0f));
+
     }
 
     public AlarmStatus getAlarmStatus() {
