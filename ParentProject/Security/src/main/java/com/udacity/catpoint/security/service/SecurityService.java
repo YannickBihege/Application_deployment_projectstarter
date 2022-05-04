@@ -184,12 +184,15 @@ public class SecurityService {
      * @param currentCameraImage
      */
     public void processImage(BufferedImage currentCameraImage) {
-        if(currentCameraImage == null){
+        if(currentCameraImage == null && getAllSensorsFromState(false) ){
             // Nothing required
             setAlarmStatus(AlarmStatus.NO_ALARM);
             //
-            securityRepository.updateSensor(sensor);
-
+        }
+        else if(currentCameraImage == null && getAllSensorsFromState(true) ){
+            // Nothing required
+            setAlarmStatus(AlarmStatus.NO_ALARM);
+            //
         }
         else if(currentCameraImage != null) {
             catDetected(imageService.imageContainsCat(currentCameraImage, 50.0f));
