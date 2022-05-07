@@ -80,11 +80,7 @@ public class SecurityService {
     public void removeStatusListener(StatusListener statusListener) {
         statusListeners.remove(statusListener);
     }
-
-    public boolean hasStatusListener(StatusListener statusListener) {
-        if (statusListeners.contains(statusListener)) return true;
-        return false;
-    }
+    
 
     /**
      * Change the alarm status of the system and notify all listeners.
