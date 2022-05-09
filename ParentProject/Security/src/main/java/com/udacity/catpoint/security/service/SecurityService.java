@@ -36,6 +36,7 @@ public class SecurityService {
      * may update both the alarm status.
      * @param armingStatus
      */
+
     public void setArmingStatus(ArmingStatus armingStatus) {
 
         if(armingStatus == ArmingStatus.DISARMED) {
@@ -86,10 +87,24 @@ public class SecurityService {
      * Change the alarm status of the system and notify all listeners.
      * @param status
      */
+    /*
     public void setAlarmStatus(AlarmStatus status) {
         securityRepository.setAlarmStatus(status);
         statusListeners.forEach(sl -> sl.notify(status));
     }
+    */
+    public void setAlarmStatus(AlarmStatus status) {
+       // If alarm is active, change in sensor state should not affect the alarm state.
+        if(status != AlarmStatus.NO_ALARM){
+            securityRepository.setAlarmStatus(status);
+            statusListeners.forEach(sl -> sl.notify(status));
+        } else{
+            statusListeners.forEach(sl -> sl.notify(status));
+            // do not affect the alarm status
+        }
+
+    }
+
 
     /**
      * Internal method for updating the alarm status when a sensor has been activated.
@@ -164,5 +179,10 @@ public class SecurityService {
 
     public ArmingStatus getArmingStatus() {
         return securityRepository.getArmingStatus();
+    }
+
+    public boolean hasStatusListener(StatusListener statusListener) {
+        if (statusListeners.contains(statusListener)) return true;
+        return false;
     }
 }
