@@ -37,6 +37,7 @@ public class SecurityService {
      * @param armingStatus
      */
 
+    /*
     public void setArmingStatus(ArmingStatus armingStatus) {
 
         if(armingStatus == ArmingStatus.DISARMED) {
@@ -53,6 +54,26 @@ public class SecurityService {
         securityRepository.setArmingStatus(armingStatus);
         statusListeners.forEach(sl -> sl.sensorStatusChanged());
     }
+     */
+    public void setArmingStatus(ArmingStatus armingStatus){
+      switch (armingStatus){
+          case DISARMED ->{
+                  setAlarmStatus(AlarmStatus.NO_ALARM);
+                  break;
+          }
+          case ARMED_HOME, ARMED_AWAY ->{
+              if(hasCat){
+                  setAlarmStatus(AlarmStatus.ALARM);
+              }
+              ConcurrentSkipListSet<Sensor> sensors = new ConcurrentSkipListSet<>(getSensors());
+              sensors.forEach(sensor -> changeSensorActivationStatus(sensor, false));
+              break;
+          }
+      }
+        securityRepository.setArmingStatus(armingStatus);
+        statusListeners.forEach(sl -> sl.sensorStatusChanged());
+    }
+
 
     /**
      * Internal method that handles alarm status changes based on whether
