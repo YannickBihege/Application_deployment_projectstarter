@@ -36,25 +36,6 @@ public class SecurityService {
      * may update both the alarm status.
      * @param armingStatus
      */
-
-    /*
-    public void setArmingStatus(ArmingStatus armingStatus) {
-
-        if(armingStatus == ArmingStatus.DISARMED) {
-            setAlarmStatus(AlarmStatus.NO_ALARM);
-        }
-        else {
-            if (hasCat) {
-                setAlarmStatus(AlarmStatus.ALARM);
-            }
-
-            ConcurrentSkipListSet<Sensor> sensors = new ConcurrentSkipListSet<>(getSensors());
-            sensors.forEach(sensor -> changeSensorActivationStatus(sensor, false));
-        }
-        securityRepository.setArmingStatus(armingStatus);
-        statusListeners.forEach(sl -> sl.sensorStatusChanged());
-    }
-     */
     public void setArmingStatus(ArmingStatus armingStatus){
       switch (armingStatus){
           case DISARMED ->{
@@ -115,15 +96,12 @@ public class SecurityService {
     }
     */
     public void setAlarmStatus(AlarmStatus status) {
-       // If alarm is active, change in sensor state should not affect the alarm state.
         if(status != AlarmStatus.NO_ALARM){
             securityRepository.setAlarmStatus(status);
             statusListeners.forEach(sl -> sl.notify(status));
         } else{
             statusListeners.forEach(sl -> sl.notify(status));
-            // do not affect the alarm status
         }
-
     }
 
 
@@ -156,19 +134,11 @@ public class SecurityService {
      * @param active
      */
     public void changeSensorActivationStatus(Sensor sensor, Boolean active) {
-
-        if (!sensor.getActive() && active) {
-            handleSensorActivated();
-        }
-        else if (sensor.getActive() && !active) {
+        if (getAlarmStatus() == AlarmStatus.PENDING_ALARM && !sensor.getActive()) {
+            handleSensorDeactivated();
+        } else if (getAlarmStatus() == AlarmStatus.ALARM && getArmingStatus() == ArmingStatus.DISARMED) {
             handleSensorDeactivated();
         }
-        else if (sensor.getActive() && active) {
-            if (getAlarmStatus() == AlarmStatus.PENDING_ALARM) {
-                setAlarmStatus(AlarmStatus.ALARM);
-            }
-        }
-
         sensor.setActive(active);
         securityRepository.updateSensor(sensor);
     }
