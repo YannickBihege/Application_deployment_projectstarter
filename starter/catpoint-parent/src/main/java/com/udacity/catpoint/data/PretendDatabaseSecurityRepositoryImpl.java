@@ -24,6 +24,9 @@ public class PretendDatabaseSecurityRepositoryImpl implements SecurityRepository
     private static final String ALARM_STATUS = "ALARM_STATUS";
     private static final String ARMING_STATUS = "ARMING_STATUS";
 
+    private boolean catStatus;
+
+
     private static final Preferences prefs = Preferences.userNodeForPackage(PretendDatabaseSecurityRepositoryImpl.class);
     private static final Gson gson = new Gson(); //used to serialize objects into JSON
 
@@ -31,6 +34,7 @@ public class PretendDatabaseSecurityRepositoryImpl implements SecurityRepository
         //load system state from prefs, or else default
         alarmStatus = AlarmStatus.valueOf(prefs.get(ALARM_STATUS, AlarmStatus.NO_ALARM.toString()));
         armingStatus = ArmingStatus.valueOf(prefs.get(ARMING_STATUS, ArmingStatus.DISARMED.toString()));
+        catStatus = prefs.get(catStatus);
 
         //we've serialized our sensor objects for storage, which should be a good warning sign that
         // this is likely an impractical solution for a real system
@@ -76,6 +80,13 @@ public class PretendDatabaseSecurityRepositoryImpl implements SecurityRepository
     }
 
     @Override
+    public void setCatStatus(boolean catStatus) {
+        this.catStatus = catStatus;
+        prefs.put(boolean, this.catStatus)
+    }
+
+
+    @Override
     public Set<Sensor> getSensors() {
         return sensors;
     }
@@ -89,4 +100,7 @@ public class PretendDatabaseSecurityRepositoryImpl implements SecurityRepository
     public ArmingStatus getArmingStatus() {
         return armingStatus;
     }
+
+    @Override
+    public boolean isCatStatus() {return catStatus;}
 }
