@@ -12,7 +12,8 @@ import javax.swing.*;
  * Panel that allows users to add sensors to their system. Sensors may be
  * manually set to "active" and "inactive" to test the system.
  */
-public class SensorPanel extends JPanel {
+// requirment 10 implements StatusListener to observe the updates
+public class SensorPanel extends JPanel implements StatusListener  {
 
     private SecurityService securityService;
 
@@ -29,7 +30,10 @@ public class SensorPanel extends JPanel {
     public SensorPanel(SecurityService securityService) {
         super();
         setLayout(new MigLayout());
+
         this.securityService = securityService;
+        // If the system is armed, reset all sensors to inactive. Requirement 10.
+        securityService.addStatusListener(this);
 
         panelLabel.setFont(StyleService.HEADING_FONT);
         addNewSensorButton.addActionListener(e ->
