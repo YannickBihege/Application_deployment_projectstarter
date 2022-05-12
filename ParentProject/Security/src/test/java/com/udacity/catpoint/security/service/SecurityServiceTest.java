@@ -139,24 +139,15 @@ public class SecurityServiceTest {
      * If the system is armed-home while the camera shows a cat, set the alarm status to alarm.
      */
 
-    //@Test // 1
-    //@DisplayName("*If alarm is armed and a sensor becomes activated,\n" +
-      ///      " * put the system into pending alarm status.")
-    //void ifSystemArmedAndSensorActivated_changeStatusToPending() {
-    //   when(securityRepository.getArmingStatus()).thenReturn(ArmingStatus.ARMED_HOME);
-              //   when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.NO_ALARM);
-    //   securityService.changeSensorActivationStatus(sensor, true);
-    //   assertEquals(AlarmStatus.NO_ALARM, securityService.getAlarmStatus());
-        //verify(securityRepository, times(1)).setAlarmStatus(AlarmStatus.PENDING_ALARM);
-    // }
+
     @Test // 1
     @DisplayName("*If alarm is armed and a sensor becomes activated,\n" +
          " * put the system into pending alarm status.")
     public void ifSystemArmedAndSensorActivated_changeStatusToPending(){
-        securityService.setArmingStatus(ArmingStatus.ARMED_HOME);
-        securityService.setAlarmStatus(AlarmStatus.NO_ALARM);
+        when(securityRepository.getArmingStatus()).thenReturn(ArmingStatus.ARMED_HOME);
+        when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.NO_ALARM);
         securityService.changeSensorActivationStatus(sensor, true);
-        assertEquals(null, securityService.getAlarmStatus());
+        verify(securityRepository, times(1)).setAlarmStatus(AlarmStatus.PENDING_ALARM);
     }
 
 

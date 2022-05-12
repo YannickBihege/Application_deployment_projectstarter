@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.prefs.Preferences;
+//import java.util.Stream;
 
 /**
  * Fake repository implementation for demo purposes. Stores state information in local
@@ -19,10 +20,15 @@ public class PretendDatabaseSecurityRepositoryImpl implements SecurityRepository
     private AlarmStatus alarmStatus;
     private com.udacity.catpoint.security.data.ArmingStatus armingStatus;
 
+    private Boolean catStatus;
+
     //preference keys
     private static final String SENSORS = "SENSORS";
     private static final String ALARM_STATUS = "ALARM_STATUS";
     private static final String ARMING_STATUS = "ARMING_STATUS";
+
+    private static final String CAT_STATUS = "false";
+
 
     private static final Preferences prefs = Preferences.userNodeForPackage(PretendDatabaseSecurityRepositoryImpl.class);
     private static final Gson gson = new Gson(); //used to serialize objects into JSON
@@ -31,6 +37,9 @@ public class PretendDatabaseSecurityRepositoryImpl implements SecurityRepository
         //load system state from prefs, or else default
         alarmStatus = AlarmStatus.valueOf(prefs.get(ALARM_STATUS, AlarmStatus.NO_ALARM.toString()));
         armingStatus = ArmingStatus.valueOf(prefs.get(ARMING_STATUS, ArmingStatus.DISARMED.toString()));
+        //TODO
+        catStatus = Boolean.valueOf(prefs.get(CAT_STATUS, catStatus.toString()));
+
 
         //we've serialized our sensor objects for storage, which should be a good warning sign that
         // this is likely an impractical solution for a real system
