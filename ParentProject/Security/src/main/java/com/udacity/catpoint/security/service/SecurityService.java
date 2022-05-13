@@ -150,7 +150,7 @@ public class SecurityService {
             case PENDING_ALARM -> setAlarmStatus(AlarmStatus.ALARM);
         }
     }
-    }
+
     /**
      * Internal method for updating the alarm status when a sensor has been deactivated
      */

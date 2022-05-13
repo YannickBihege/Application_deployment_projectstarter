@@ -17,9 +17,9 @@ public interface SecurityRepository {
 
     // TODO STATE
     Boolean getCatStatus();
-    Integer getNumberActiveSensorsStatus();
+  //  Integer getNumberActiveSensorsStatus();
     void setCatStatus(Boolean catStatus) ;
-    void setNumberActiveSensorsStatus(Integer numberActiveSensorsStatus);
+   // void setNumberActiveSensorsStatus(Integer numberActiveSensorsStatus);
 
 
 }
