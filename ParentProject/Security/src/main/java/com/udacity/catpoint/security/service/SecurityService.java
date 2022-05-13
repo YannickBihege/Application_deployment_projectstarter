@@ -118,12 +118,29 @@ public class SecurityService {
         }
     }
 
+
+    /**
+     * Change the activation status for the specified sensor and update alarm status if necessary.
+     * @param sensor
+     * @param active
+     */
+    /*
     public void changeSensorActivationStatus(Sensor sensor, Boolean active) {
-        // Fixed on 10.05.2022 According to review
         // If a sensor is activated while already active and the system is in pending state, change it to alarm state.
         if (getAlarmStatus() == AlarmStatus.PENDING_ALARM && !sensor.getActive()) {
             handleSensorDeactivated();
         } else if (getAlarmStatus() == AlarmStatus.ALARM && getArmingStatus() == ArmingStatus.DISARMED) {
+            handleSensorDeactivated();
+        } else if (!sensor.getActive() && active) {
+            handleSensorActivated();
+        }
+        sensor.setActive(active);
+        securityRepository.updateSensor(sensor);
+    } */
+    public void changeSensorActivationStatus(Sensor sensor, Boolean active) {
+        if (!sensor.getActive() && active) {
+            handleSensorActivated();
+        } else if (sensor.getActive()&& !active) {
             handleSensorDeactivated();
         } else if (!sensor.getActive() && active) {
             handleSensorActivated();
@@ -140,12 +157,7 @@ public class SecurityService {
         if (getArmingStatus() == ArmingStatus.DISARMED) {
             return; //no problem if the system is disarmed
         }
-        //When a second sensor is activated the system should go to ALARM
-        //if(numberActiveSensors > 1){setAlarmStatus(AlarmStatus.ALARM);}
-        else {
-        }
         switch (securityRepository.getAlarmStatus()) {
-            //When one sensor is activated the system should go to PENDING STATE
             case NO_ALARM -> setAlarmStatus(AlarmStatus.PENDING_ALARM);
             case PENDING_ALARM -> setAlarmStatus(AlarmStatus.ALARM);
         }
@@ -160,12 +172,6 @@ public class SecurityService {
             case ALARM -> setAlarmStatus(AlarmStatus.PENDING_ALARM); // Do nothing, basically stay in the same state
         }
     }
-
-    /**
-     * Change the activation status for the specified sensor and update alarm status if necessary.
-     * @param sensor
-     * @param active
-     */
 
 
     /**

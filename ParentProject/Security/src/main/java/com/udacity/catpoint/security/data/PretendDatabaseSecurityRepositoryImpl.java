@@ -106,13 +106,6 @@ public class PretendDatabaseSecurityRepositoryImpl implements SecurityRepository
         return catStatus;
     }
 
-    /*
-    @Override
-    public Integer getNumberActiveSensorsStatus() {
-        return numberActiveSensorsStatus;
-    }
-    */
-
 
     @Override
     public void setCatStatus(Boolean catStatus) {
@@ -126,6 +119,13 @@ public class PretendDatabaseSecurityRepositoryImpl implements SecurityRepository
     public void setNumberActiveSensorsStatus(Integer numberActiveSensorsStatus) {
         this.numberActiveSensorsStatus = numberActiveSensorsStatus;
         prefs.put(NUMBER_ACTIVE_SENSORS_STATUS,Integer.toString(numberActiveSensorsStatus) );
+    }
+    */
+
+     /*
+    @Override
+    public Integer getNumberActiveSensorsStatus() {
+        return numberActiveSensorsStatus;
     }
     */
 
