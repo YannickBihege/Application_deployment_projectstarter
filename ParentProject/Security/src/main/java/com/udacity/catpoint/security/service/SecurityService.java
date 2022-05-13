@@ -24,7 +24,7 @@ public class SecurityService {
     private ImageService imageService;
     private SecurityRepository securityRepository;
     private Set<StatusListener> statusListeners = new HashSet<>();
-    private boolean catDetection = false;
+    private Boolean catDetection = false;
 
 
     public SecurityService(SecurityRepository securityRepository, ImageService imageService) {
