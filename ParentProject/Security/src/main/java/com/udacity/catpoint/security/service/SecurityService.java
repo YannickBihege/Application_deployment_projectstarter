@@ -10,7 +10,12 @@ import com.udacity.catpoint.security.data.Sensor;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 import java.util.concurrent.ConcurrentSkipListSet;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Service that receives information about changes to the security system. Responsible for
@@ -26,17 +31,25 @@ public class SecurityService {
     private Set<StatusListener> statusListeners = new HashSet<>();
     private Boolean catDetection = false;
 
-
     public SecurityService(SecurityRepository securityRepository, ImageService imageService) {
         this.securityRepository = securityRepository;
         this.imageService = imageService;
     }
-/*
-    Set<Sensor> getActiveSensors(){
-        return getSensors().stream().filter(Sensor::getActive).collect(Collectors.toSet());
+    /**
+     * These methods should be applied to track the number of active and inactive  sensors
+     * getActive is implemented by the Sensor class
+     */
+    private Boolean allSensorsInactive(){
+        return  getSensors().stream().noneMatch(Sensor::getActive);
     }
 
-    */
+    Set<Sensor> getActiveSensors(){
+        return getSensors().stream().filter(Sensor::getActive).collect(toSet());
+    }
+
+    boolean systemArmed(){
+        return List.of(ArmingStatus.ARMED_HOME, ArmingStatus.ARMED_AWAY).contains(this.securityRepository.getArmingStatus());
+    }
 
     /**
      * Sets the current arming status for the system. Changing the arming status
@@ -96,12 +109,6 @@ public class SecurityService {
      * Change the alarm status of the system and notify all listeners.
      * @param status
      */
-    /*
-    public void setAlarmStatus(AlarmStatus status) {
-        securityRepository.setAlarmStatus(status);
-        statusListeners.forEach(sl -> sl.notify(status));
-    }
-    */
     public void setAlarmStatus(AlarmStatus status) {
         if(status != AlarmStatus.NO_ALARM){
             securityRepository.setAlarmStatus(status);
@@ -120,7 +127,6 @@ public class SecurityService {
             handleSensorDeactivated();
         } else if (!sensor.getActive() && active) {
             handleSensorActivated();
-
         }
         sensor.setActive(active);
         securityRepository.updateSensor(sensor);
