@@ -119,7 +119,6 @@ public class SecurityService {
     }
 
     public void changeSensorActivationStatus(Sensor sensor, Boolean active) {
-
         // Fixed on 10.05.2022 According to review
         // If a sensor is activated while already active and the system is in pending state, change it to alarm state.
         if (getAlarmStatus() == AlarmStatus.PENDING_ALARM && !sensor.getActive()) {
@@ -137,37 +136,28 @@ public class SecurityService {
      * Internal method for updating the alarm status when a sensor has been activated.
      */
     private void handleSensorActivated() {
-        int numberActiveSensors = getSensors().stream().filter(Sensor::getActive).collect(toSet()).size();
-
-        if(getArmingStatus() == ArmingStatus.DISARMED) {
+       // int numberActiveSensors = getSensors().stream().filter(Sensor::getActive).collect(toSet()).size();
+        if (getArmingStatus() == ArmingStatus.DISARMED) {
             return; //no problem if the system is disarmed
         }
-
         //When a second sensor is activated the system should go to ALARM
-        if(numberActiveSensors > 1){
-            setAlarmStatus(AlarmStatus.ALARM);
+        //if(numberActiveSensors > 1){setAlarmStatus(AlarmStatus.ALARM);}
+        else {
         }
-        else{
-            switch(securityRepository.getAlarmStatus()) {
-                //When one sensor is activated the system should go to PENDING STATE
-                case NO_ALARM -> setAlarmStatus(AlarmStatus.PENDING_ALARM);
-                case PENDING_ALARM -> setAlarmStatus(AlarmStatus.ALARM);
-               // case ALARM -> throw new UnsupportedOperationException("Unimplemented case: " + securityRepository.getAlarmStatus());
-               // default -> throw new IllegalArgumentException("Unexpected value: " + securityRepository.getAlarmStatus());
-            }
+        switch (securityRepository.getAlarmStatus()) {
+            //When one sensor is activated the system should go to PENDING STATE
+            case NO_ALARM -> setAlarmStatus(AlarmStatus.PENDING_ALARM);
+            case PENDING_ALARM -> setAlarmStatus(AlarmStatus.ALARM);
         }
     }
-
+    }
     /**
      * Internal method for updating the alarm status when a sensor has been deactivated
      */
     private void handleSensorDeactivated() {
         switch(securityRepository.getAlarmStatus()) {
             case PENDING_ALARM -> setAlarmStatus(AlarmStatus.NO_ALARM);
-            case ALARM -> setAlarmStatus(AlarmStatus.PENDING_ALARM);
-            //After going to ALARM state, a sensor deactivated should not change the alarm status
-           // case NO_ALARM -> throw new UnsupportedOperationException("Unimplemented case: " + securityRepository.getAlarmStatus());
-           // default -> throw new IllegalArgumentException("Unexpected value: " + securityRepository.getAlarmStatus());
+            case ALARM -> setAlarmStatus(AlarmStatus.PENDING_ALARM); // Do nothing, basically stay in the same state
         }
     }
 
