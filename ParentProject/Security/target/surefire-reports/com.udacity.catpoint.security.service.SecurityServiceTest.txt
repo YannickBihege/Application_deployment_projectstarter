@@ -1,4 +1,44 @@
 -------------------------------------------------------------------------------
 Test set: com.udacity.catpoint.security.service.SecurityServiceTest
 -------------------------------------------------------------------------------
-Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.692 s - in com.udacity.catpoint.security.service.SecurityServiceTest
+Tests run: 19, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.882 s <<< FAILURE! - in com.udacity.catpoint.security.service.SecurityServiceTest
+com.udacity.catpoint.security.service.SecurityServiceTest.ifPendingAlarmAndAllSensorsInactive_returnNoAlarmState  Time elapsed: 0.004 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <NO_ALARM> but was: <PENDING_ALARM>
+	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.ifPendingAlarmAndAllSensorsInactive_returnNoAlarmState(SecurityServiceTest.java:192)
+
+com.udacity.catpoint.security.service.SecurityServiceTest.changeSensorActivationStatus_pending_inactive_setNoAlarm  Time elapsed: 0.011 s  <<< FAILURE!
+org.mockito.exceptions.verification.opentest4j.ArgumentsAreDifferent: 
+
+Argument(s) are different! Wanted:
+securityRepository.setAlarmStatus(
+    NO_ALARM
+);
+-> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeSensorActivationStatus_pending_inactive_setNoAlarm(SecurityServiceTest.java:174)
+Actual invocations have different arguments:
+securityRepository.getArmingStatus(
+    
+);
+-> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityService.getArmingStatus(SecurityService.java:208)
+securityRepository.getAlarmStatus(
+    
+);
+-> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityService.handleSensorActivated(SecurityService.java:162)
+securityRepository.setAlarmStatus(
+    ALARM
+);
+-> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityService.setAlarmStatus(SecurityService.java:119)
+securityRepository.updateSensor(
+    com.udacity.catpoint.security.data.Sensor@19cb6f8
+);
+-> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityService.changeSensorActivationStatus(SecurityService.java:150)
+securityRepository.getAlarmStatus(
+    
+);
+-> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityService.handleSensorDeactivated(SecurityService.java:174)
+securityRepository.updateSensor(
+    com.udacity.catpoint.security.data.Sensor@19cb6f8
+);
+-> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityService.changeSensorActivationStatus(SecurityService.java:150)
+
+	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeSensorActivationStatus_pending_inactive_setNoAlarm(SecurityServiceTest.java:174)
+

@@ -20,7 +20,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Service that receives information about changes to the security system. Responsible for
  * forwarding updates to the repository and making any decisions about changing the system state.
- *
+ * <p>
  * This is the class that should contain most of the business logic for our system, and it is the
  * class you will be writing unit tests for.
  */
@@ -35,35 +35,37 @@ public class SecurityService {
         this.securityRepository = securityRepository;
         this.imageService = imageService;
     }
+
     /**
      * These methods should be applied to track the number of active and inactive  sensors
      * getActive is implemented by the Sensor class
      */
-    private Boolean allSensorsInactive(){
-        return  getSensors().stream().noneMatch(Sensor::getActive);
+    private Boolean allSensorsInactive() {
+        return getSensors().stream().noneMatch(Sensor::getActive);
     }
 
-    Set<Sensor> getActiveSensors(){
+    Set<Sensor> getActiveSensors() {
         return getSensors().stream().filter(Sensor::getActive).collect(toSet());
     }
 
-    boolean systemArmed(){
+    boolean systemArmed() {
         return List.of(ArmingStatus.ARMED_HOME, ArmingStatus.ARMED_AWAY).contains(this.securityRepository.getArmingStatus());
     }
 
     /**
      * Sets the current arming status for the system. Changing the arming status
      * may update both the alarm status.
+     *
      * @param armingStatus
      */
-    public void setArmingStatus(ArmingStatus armingStatus){
-        switch (armingStatus){
-            case DISARMED ->{
+    public void setArmingStatus(ArmingStatus armingStatus) {
+        switch (armingStatus) {
+            case DISARMED -> {
                 setAlarmStatus(AlarmStatus.NO_ALARM);
                 break;
             }
-            case ARMED_HOME, ARMED_AWAY ->{
-                if(catDetection){
+            case ARMED_HOME, ARMED_AWAY -> {
+                if (catDetection) {
                     setAlarmStatus(AlarmStatus.ALARM);
                 }
                 ConcurrentSkipListSet<Sensor> sensors = new ConcurrentSkipListSet<>(getSensors());
@@ -79,14 +81,15 @@ public class SecurityService {
     /**
      * Internal method that handles alarm status changes based on whether
      * the camera currently shows a cat.
+     *
      * @param cat True if a cat is detected, otherwise false.
      */
     private void catDetected(Boolean cat) {
         catDetection = cat;
 
-        if(cat && getArmingStatus() == ArmingStatus.ARMED_HOME) {
+        if (cat && getArmingStatus() == ArmingStatus.ARMED_HOME) {
             setAlarmStatus(AlarmStatus.ALARM);
-        } else if(!cat && getSensors().stream().allMatch(sensor -> !sensor.getActive())) {
+        } else if (!cat && getSensors().stream().allMatch(sensor -> !sensor.getActive())) {
             setAlarmStatus(AlarmStatus.NO_ALARM);
         }
         statusListeners.forEach(sl -> sl.catDetected(cat));
@@ -94,6 +97,7 @@ public class SecurityService {
 
     /**
      * Register the StatusListener for alarm system updates from within the SecurityService.
+     *
      * @param statusListener
      */
     public void addStatusListener(StatusListener statusListener) {
@@ -107,13 +111,14 @@ public class SecurityService {
 
     /**
      * Change the alarm status of the system and notify all listeners.
+     *
      * @param status
      */
     public void setAlarmStatus(AlarmStatus status) {
-        if(status != AlarmStatus.NO_ALARM){
+        if (status != AlarmStatus.NO_ALARM) {
             securityRepository.setAlarmStatus(status);
             statusListeners.forEach(sl -> sl.notify(status));
-        } else{
+        } else {
             statusListeners.forEach(sl -> sl.notify(status));
         }
     }
@@ -121,45 +126,44 @@ public class SecurityService {
 
     /**
      * Change the activation status for the specified sensor and update alarm status if necessary.
+     *
      * @param sensor
      * @param active
      */
-    /*
+
     public void changeSensorActivationStatus(Sensor sensor, Boolean active) {
-        // If a sensor is activated while already active and the system is in pending state, change it to alarm state.
-        if (getAlarmStatus() == AlarmStatus.PENDING_ALARM && !sensor.getActive()) {
-            handleSensorDeactivated();
-        } else if (getAlarmStatus() == AlarmStatus.ALARM && getArmingStatus() == ArmingStatus.DISARMED) {
-            handleSensorDeactivated();
-        } else if (!sensor.getActive() && active) {
+        if (!sensor.getActive() && active) {  //1
             handleSensorActivated();
-        }
-        sensor.setActive(active);
-        securityRepository.updateSensor(sensor);
-    } */
-    public void changeSensorActivationStatus(Sensor sensor, Boolean active) {
-        if (!sensor.getActive() && active) {
+        } else if (!sensor.getActive() && !active) {
             handleSensorActivated();
-        } else if (sensor.getActive()&& !active) {
+        } else if (sensor.getActive() && !active) { //3 Deactivated
             handleSensorDeactivated();
-        } else if (!sensor.getActive() && active) {
-            handleSensorActivated();
+        } else if (sensor.getActive() && active) { // 4
+            //TODO Two systems are active  the system should go to ALARM state.
+            switch (securityRepository.getAlarmStatus()) {
+                case NO_ALARM -> setAlarmStatus(AlarmStatus.ALARM);
+                case PENDING_ALARM -> setAlarmStatus(AlarmStatus.ALARM);
+                case ALARM -> setAlarmStatus(AlarmStatus.ALARM);  // Do nothing, basically stay in the same state
+            }
         }
         sensor.setActive(active);
         securityRepository.updateSensor(sensor);
     }
 
+
     /**
      * Internal method for updating the alarm status when a sensor has been activated.
      */
     private void handleSensorActivated() {
-       // int numberActiveSensors = getSensors().stream().filter(Sensor::getActive).collect(toSet()).size();
+        // int numberActiveSensors = getSensors().stream().filter(Sensor::getActive).collect(toSet()).size();
         if (getArmingStatus() == ArmingStatus.DISARMED) {
             return; //no problem if the system is disarmed
-        }
-        switch (securityRepository.getAlarmStatus()) {
-            case NO_ALARM -> setAlarmStatus(AlarmStatus.PENDING_ALARM);
-            case PENDING_ALARM -> setAlarmStatus(AlarmStatus.ALARM);
+        } else {
+            switch (securityRepository.getAlarmStatus()) {
+                case NO_ALARM -> setAlarmStatus(AlarmStatus.PENDING_ALARM);
+                case PENDING_ALARM -> setAlarmStatus(AlarmStatus.ALARM);
+                case ALARM -> setAlarmStatus(AlarmStatus.ALARM); // Do nothing, basically stay in the same state
+            }
         }
     }
 
@@ -167,9 +171,9 @@ public class SecurityService {
      * Internal method for updating the alarm status when a sensor has been deactivated
      */
     private void handleSensorDeactivated() {
-        switch(securityRepository.getAlarmStatus()) {
+        switch (securityRepository.getAlarmStatus()) {
             case PENDING_ALARM -> setAlarmStatus(AlarmStatus.NO_ALARM);
-            case ALARM -> setAlarmStatus(AlarmStatus.PENDING_ALARM); // Do nothing, basically stay in the same state
+            case ALARM -> setAlarmStatus(AlarmStatus.ALARM); // Do nothing, basically stay in the same state
         }
     }
 
@@ -177,6 +181,7 @@ public class SecurityService {
     /**
      * Send an image to the SecurityService for processing. The securityService will use its provided
      * ImageService to analyze the image for cats and update the alarm status accordingly.
+     *
      * @param currentCameraImage
      */
     public void processImage(BufferedImage currentCameraImage) {
