@@ -115,12 +115,8 @@ public class SecurityService {
      * @param status
      */
     public void setAlarmStatus(AlarmStatus status) {
-        if (status != AlarmStatus.NO_ALARM) {
-            securityRepository.setAlarmStatus(status);
-            statusListeners.forEach(sl -> sl.notify(status));
-        } else {
-            statusListeners.forEach(sl -> sl.notify(status));
-        }
+        securityRepository.setAlarmStatus(status);
+        statusListeners.forEach(sl -> sl.notify(status));
     }
 
 

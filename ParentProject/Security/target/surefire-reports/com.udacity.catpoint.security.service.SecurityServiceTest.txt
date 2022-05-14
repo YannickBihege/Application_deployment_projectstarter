@@ -1,87 +1,26 @@
 -------------------------------------------------------------------------------
 Test set: com.udacity.catpoint.security.service.SecurityServiceTest
 -------------------------------------------------------------------------------
-Tests run: 18, Failures: 4, Errors: 3, Skipped: 0, Time elapsed: 1.028 s <<< FAILURE! - in com.udacity.catpoint.security.service.SecurityServiceTest
-com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_alarmActiveAndSensorStateChanges_stateNotAffected(boolean)[1]  Time elapsed: 0.024 s  <<< FAILURE!
-org.mockito.exceptions.verification.NeverWantedButInvoked: 
-
-securityRepository.setAlarmStatus(<any>);
-Never wanted here:
--> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_alarmActiveAndSensorStateChanges_stateNotAffected(SecurityServiceTest.java:186)
-But invoked here:
--> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityService.setAlarmStatus(SecurityService.java:119) with arguments: [ALARM]
-
-	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_alarmActiveAndSensorStateChanges_stateNotAffected(SecurityServiceTest.java:186)
-
+Tests run: 18, Failures: 1, Errors: 3, Skipped: 0, Time elapsed: 0.612 s <<< FAILURE! - in com.udacity.catpoint.security.service.SecurityServiceTest
 com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(AlarmStatus)[1]  Time elapsed: 0.002 s  <<< ERROR!
 java.lang.NullPointerException
-	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(SecurityServiceTest.java:208)
+	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(SecurityServiceTest.java:209)
 
-com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(AlarmStatus)[2]  Time elapsed: 0.003 s  <<< ERROR!
+com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(AlarmStatus)[2]  Time elapsed: 0.002 s  <<< ERROR!
 java.lang.NullPointerException
-	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(SecurityServiceTest.java:208)
+	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(SecurityServiceTest.java:209)
 
 com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(AlarmStatus)[3]  Time elapsed: 0.002 s  <<< ERROR!
 java.lang.NullPointerException
-	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(SecurityServiceTest.java:208)
+	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(SecurityServiceTest.java:209)
 
-com.udacity.catpoint.security.service.SecurityServiceTest.ifPendingAlarmAndAllSensorsInactive_returnNoAlarmState  Time elapsed: 0.007 s  <<< FAILURE!
-org.mockito.exceptions.verification.opentest4j.ArgumentsAreDifferent: 
-
-Argument(s) are different! Wanted:
-securityRepository.setAlarmStatus(
-    NO_ALARM
-);
--> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.ifPendingAlarmAndAllSensorsInactive_returnNoAlarmState(SecurityServiceTest.java:174)
-Actual invocations have different arguments:
-securityRepository.getArmingStatus(
-    
-);
--> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityService.getArmingStatus(SecurityService.java:208)
-securityRepository.getAlarmStatus(
-    
-);
--> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityService.handleSensorActivated(SecurityService.java:162)
-securityRepository.setAlarmStatus(
-    ALARM
-);
--> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityService.setAlarmStatus(SecurityService.java:119)
-securityRepository.updateSensor(
-    com.udacity.catpoint.security.data.Sensor@e7af5d81
-);
--> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityService.changeSensorActivationStatus(SecurityService.java:150)
-securityRepository.getAlarmStatus(
-    
-);
--> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityService.handleSensorDeactivated(SecurityService.java:174)
-securityRepository.updateSensor(
-    com.udacity.catpoint.security.data.Sensor@e7af5d81
-);
--> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityService.changeSensorActivationStatus(SecurityService.java:150)
-
-	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.ifPendingAlarmAndAllSensorsInactive_returnNoAlarmState(SecurityServiceTest.java:174)
-
-com.udacity.catpoint.security.service.SecurityServiceTest.processImage_noCat_sensorInactive_returnNoAlarm  Time elapsed: 0.01 s  <<< FAILURE!
+com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmStatus_systemDisArmed_changeToAlarmStatus  Time elapsed: 0.007 s  <<< FAILURE!
 org.mockito.exceptions.verification.WantedButNotInvoked: 
 
 Wanted but not invoked:
 securityRepository.setAlarmStatus(NO_ALARM);
--> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.processImage_noCat_sensorInactive_returnNoAlarm(SecurityServiceTest.java:233)
-
-However, there was exactly 1 interaction with this mock:
-securityRepository.getSensors();
--> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityService.getSensors(SecurityService.java:196)
-
-
-	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.processImage_noCat_sensorInactive_returnNoAlarm(SecurityServiceTest.java:233)
-
-com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmStatus_systemDisArmed_changeToAlarmStatus  Time elapsed: 0.002 s  <<< FAILURE!
-org.mockito.exceptions.verification.WantedButNotInvoked: 
-
-Wanted but not invoked:
-securityRepository.setAlarmStatus(NO_ALARM);
--> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmStatus_systemDisArmed_changeToAlarmStatus(SecurityServiceTest.java:241)
+-> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmStatus_systemDisArmed_changeToAlarmStatus(SecurityServiceTest.java:242)
 Actually, there were zero interactions with this mock.
 
-	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmStatus_systemDisArmed_changeToAlarmStatus(SecurityServiceTest.java:241)
+	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmStatus_systemDisArmed_changeToAlarmStatus(SecurityServiceTest.java:242)
 
