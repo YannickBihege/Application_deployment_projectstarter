@@ -1,26 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.udacity.catpoint.security.service.SecurityServiceTest
 -------------------------------------------------------------------------------
-Tests run: 18, Failures: 1, Errors: 3, Skipped: 0, Time elapsed: 0.612 s <<< FAILURE! - in com.udacity.catpoint.security.service.SecurityServiceTest
-com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(AlarmStatus)[1]  Time elapsed: 0.002 s  <<< ERROR!
-java.lang.NullPointerException
-	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(SecurityServiceTest.java:209)
-
-com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(AlarmStatus)[2]  Time elapsed: 0.002 s  <<< ERROR!
-java.lang.NullPointerException
-	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(SecurityServiceTest.java:209)
-
-com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(AlarmStatus)[3]  Time elapsed: 0.002 s  <<< ERROR!
-java.lang.NullPointerException
-	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState(SecurityServiceTest.java:209)
-
-com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmStatus_systemDisArmed_changeToAlarmStatus  Time elapsed: 0.007 s  <<< FAILURE!
-org.mockito.exceptions.verification.WantedButNotInvoked: 
-
-Wanted but not invoked:
-securityRepository.setAlarmStatus(NO_ALARM);
--> at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmStatus_systemDisArmed_changeToAlarmStatus(SecurityServiceTest.java:242)
-Actually, there were zero interactions with this mock.
-
-	at com.udacity.catpoint.security/com.udacity.catpoint.security.service.SecurityServiceTest.changeAlarmStatus_systemDisArmed_changeToAlarmStatus(SecurityServiceTest.java:242)
-
+Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.783 s - in com.udacity.catpoint.security.service.SecurityServiceTest
