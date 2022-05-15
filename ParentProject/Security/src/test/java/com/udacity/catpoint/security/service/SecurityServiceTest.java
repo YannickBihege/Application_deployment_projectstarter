@@ -275,6 +275,23 @@ public class SecurityServiceTest {
         verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
     }
 
+    @Test
+    @DisplayName("Two systems are active. Pending Alarm THe system should go to ALARM state")
+    void setAlarmStatusNotchanging_sensorGetactiveAndBooleanActiveAlarmPending(){
+        when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.PENDING_ALARM);
+        securityService.changeSensorActivationStatus(sensor, true);
+        verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
+
+    }
+
+    @Test
+    @DisplayName("Two systems are active. THe system should go to ALARM state")
+    void setAlarmStatusNotchanging_sensorGetactiveAndBooleanActiveAlarmIsAlarm(){
+        when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.ALARM);
+        securityService.changeSensorActivationStatus(sensor, true);
+        verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
+
+    }
 
     @Test
     public void addStatusListener_returnSizeOne() {
