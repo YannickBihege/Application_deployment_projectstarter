@@ -313,13 +313,23 @@ public class SecurityServiceTest {
     }
 
     @Test
-    @DisplayName("Two systems are inactive. Alarm is pending")
+    @DisplayName("Two systems are inactive. Alarm is activated")
     void setAlarmStatusAlarm_sensorNotGetActiveAndBooleanNotActiveAlarmIsAlarm(){
         sensor.setActive(false);
         when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.ALARM);
         securityService.changeSensorActivationStatus(sensor, false);
         verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
     }
+
+    @Test
+    @DisplayName("Handle deactivation")
+    void setAlarmWhileDeactivation(){
+        sensor.setActive(true);
+        when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.ALARM);
+        securityService.changeSensorActivationStatus(sensor, false);
+        verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
+    }
+
 
 
 
