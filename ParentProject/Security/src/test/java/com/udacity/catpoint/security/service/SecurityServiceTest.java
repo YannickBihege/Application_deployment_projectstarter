@@ -278,7 +278,7 @@ public class SecurityServiceTest {
 
     @Test
     @DisplayName("Two systems are active. Pending Alarm THe system should go to ALARM state")
-    void setAlarmStatusNotchanging_sensorGetactiveAndBooleanActiveAlarmPending(){
+    void setAlarmStatusNotChanging_sensorGetActiveAndBooleanActiveAlarmPending(){
         when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.PENDING_ALARM);
         securityService.changeSensorActivationStatus(sensor, true);
         verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
@@ -287,7 +287,7 @@ public class SecurityServiceTest {
 
     @Test
     @DisplayName("Two systems are active. THe system should go to ALARM state")
-    void setAlarmStatusNotchanging_sensorGetactiveAndBooleanActiveAlarmIsAlarm(){
+    void setAlarmStatusNotChanging_sensorGetActiveAndBooleanActiveAlarmIsAlarm(){
         when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.ALARM);
         securityService.changeSensorActivationStatus(sensor, true);
         verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
@@ -306,11 +306,22 @@ public class SecurityServiceTest {
     @Test
     @DisplayName("Two systems are inactive. Alarm is pending")
     void setAlarmStatusAlarm_sensorNotGetActiveAndBooleanNotActiveAlarmIsPending(){
-        sensor.setActive(false);
+        //sensor.setActive(false);
         when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.PENDING_ALARM);
         securityService.changeSensorActivationStatus(sensor, false);
         verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
     }
+
+    @Test
+    @DisplayName("Two systems are inactive. Alarm is pending")
+    void setAlarmStatusAlarm_sensorNotGetActiveAndBooleanNotActiveAlarmIsAlarm(){
+        sensor.setActive(false);
+        when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.ALARM);
+        securityService.changeSensorActivationStatus(sensor, false);
+        verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
+    }
+
+
 
 
 
