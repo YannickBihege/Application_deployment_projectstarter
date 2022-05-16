@@ -137,9 +137,8 @@ public class SecurityService {
         } else if (sensor.getActive() && active) { // 4
             //TODO Two systems are active  the system should go to ALARM state.
             switch (securityRepository.getAlarmStatus()) {
-                case NO_ALARM -> setAlarmStatus(AlarmStatus.ALARM);
-                case PENDING_ALARM -> setAlarmStatus(AlarmStatus.ALARM);
-                case ALARM -> setAlarmStatus(AlarmStatus.ALARM);  // Do nothing, basically stay in the same state
+                case NO_ALARM, PENDING_ALARM, ALARM -> setAlarmStatus(AlarmStatus.ALARM);
+                // Do nothing, basically stay in the same state
             }
         }
         sensor.setActive(active);
@@ -157,8 +156,8 @@ public class SecurityService {
         } else {
             switch (securityRepository.getAlarmStatus()) {
                 case NO_ALARM -> setAlarmStatus(AlarmStatus.PENDING_ALARM);
-                case PENDING_ALARM -> setAlarmStatus(AlarmStatus.ALARM);
-                case ALARM -> setAlarmStatus(AlarmStatus.ALARM); // Do nothing, basically stay in the same state
+                case PENDING_ALARM, ALARM -> setAlarmStatus(AlarmStatus.ALARM);
+                // Do nothing, basically stay in the same state
             }
         }
     }
