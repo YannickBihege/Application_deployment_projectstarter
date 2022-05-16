@@ -62,7 +62,6 @@ public class SecurityService {
         switch (armingStatus) {
             case DISARMED -> {
                 setAlarmStatus(AlarmStatus.NO_ALARM);
-                break;
             }
             case ARMED_HOME, ARMED_AWAY -> {
                 if (catDetection) {
@@ -70,7 +69,6 @@ public class SecurityService {
                 }
                 ConcurrentSkipListSet<Sensor> sensors = new ConcurrentSkipListSet<>(getSensors());
                 sensors.forEach(sensor -> changeSensorActivationStatus(sensor, false));
-                break;
             }
         }
         securityRepository.setArmingStatus(armingStatus);
@@ -204,7 +202,6 @@ public class SecurityService {
     }
 
     public boolean hasStatusListener(StatusListener statusListener) {
-        if (statusListeners.contains(statusListener)) return true;
-        return false;
+        return statusListeners.contains(statusListener);
     }
 }

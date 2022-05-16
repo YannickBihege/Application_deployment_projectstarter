@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -292,6 +293,27 @@ public class SecurityServiceTest {
         verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
 
     }
+
+    @Test
+    @DisplayName("Two systems are inactive No alarm state")
+    void setAlarmStatus_sensorInactiveAndBooleanNotActiveAlarmIsNoAlarm(){
+        when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.NO_ALARM);
+        securityService.changeSensorActivationStatus(sensor, false);
+        verify(securityRepository).setAlarmStatus(AlarmStatus.PENDING_ALARM);
+
+    }
+
+    @Test
+    @DisplayName("Two systems are inactive. Alarm is pending")
+    void setAlarmStatusAlarm_sensorNotGetActiveAndBooleanNotActiveAlarmIsPending(){
+        sensor.setActive(false);
+        when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.PENDING_ALARM);
+        securityService.changeSensorActivationStatus(sensor, false);
+        verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
+    }
+
+
+
 
     @Test
     public void addStatusListener_returnSizeOne() {
