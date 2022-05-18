@@ -21,7 +21,6 @@ public class PretendDatabaseSecurityRepositoryImpl implements SecurityRepository
     private com.udacity.catpoint.security.data.ArmingStatus armingStatus;
 
     private Boolean catStatus;
-  //  private Integer numberActiveSensorsStatus;
 
     //preference keys
     private static final String SENSORS = "SENSORS";
@@ -30,7 +29,6 @@ public class PretendDatabaseSecurityRepositoryImpl implements SecurityRepository
 
     private static final String CAT_STATUS = "false";
 
-    //private static final String NUMBER_ACTIVE_SENSORS_STATUS ="0";
 
     private static final Preferences prefs = Preferences.userNodeForPackage(PretendDatabaseSecurityRepositoryImpl.class);
     private static final Gson gson = new Gson(); //used to serialize objects into JSON
@@ -39,9 +37,7 @@ public class PretendDatabaseSecurityRepositoryImpl implements SecurityRepository
         //load system state from prefs, or else default
         alarmStatus = AlarmStatus.valueOf(prefs.get(ALARM_STATUS, AlarmStatus.NO_ALARM.toString()));
         armingStatus = ArmingStatus.valueOf(prefs.get(ARMING_STATUS, ArmingStatus.DISARMED.toString()));
-        //TODO
         catStatus = Boolean.valueOf(prefs.get(CAT_STATUS, String.valueOf(catStatus)));
-       // numberActiveSensorsStatus = Integer.valueOf(prefs.get(NUMBER_ACTIVE_SENSORS_STATUS, Integer.toString(numberActiveSensorsStatus) ));
 
         //we've serialized our sensor objects for storage, which should be a good warning sign that
         // this is likely an impractical solution for a real system
@@ -114,19 +110,5 @@ public class PretendDatabaseSecurityRepositoryImpl implements SecurityRepository
 
     }
 
-    /*
-    @Override
-    public void setNumberActiveSensorsStatus(Integer numberActiveSensorsStatus) {
-        this.numberActiveSensorsStatus = numberActiveSensorsStatus;
-        prefs.put(NUMBER_ACTIVE_SENSORS_STATUS,Integer.toString(numberActiveSensorsStatus) );
-    }
-    */
-
-     /*
-    @Override
-    public Integer getNumberActiveSensorsStatus() {
-        return numberActiveSensorsStatus;
-    }
-    */
 
 }

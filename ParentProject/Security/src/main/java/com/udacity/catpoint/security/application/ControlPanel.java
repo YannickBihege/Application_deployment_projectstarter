@@ -18,7 +18,6 @@ public class ControlPanel extends JPanel {
     private SecurityService securityService;
     private Map<ArmingStatus, JButton> buttonMap;
 
-
     public ControlPanel(SecurityService securityService) {
         super();
         setLayout(new MigLayout());

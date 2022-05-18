@@ -16,7 +16,6 @@ import javax.swing.*;
  * manually set to "active" and "inactive" to test the system.
  */
 public class SensorPanel extends JPanel implements StatusListener {
-
     private SecurityService securityService;
 
     private JLabel panelLabel = new JLabel("Sensor Management");

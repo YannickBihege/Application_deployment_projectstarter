@@ -107,8 +107,6 @@ public class SecurityServiceTest {
         sensors.forEach(s -> s.setActive(active));
         return sensors;
     }
-
-
     /**
      * 1)  done
      * If alarm is armed and a sensor becomes activated,
@@ -139,7 +137,6 @@ public class SecurityServiceTest {
      * 11) done
      * If the system is armed-home while the camera shows a cat, set the alarm status to alarm.
      */
-
 
     @Test // 1
     @DisplayName("*If alarm is armed and a sensor becomes activated,\n" +
@@ -201,17 +198,6 @@ public class SecurityServiceTest {
         verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
     }
 
-    /*
-    @ParameterizedTest // 6
-    @DisplayName("If a sensor is deactivated while already inactive,\n" +
-            " * make no changes to the alarm state.")
-    @EnumSource(value = AlarmStatus.class, names = {"NO_ALARM", "PENDING_ALARM", "ALARM"})
-    // constructr AlarmStatus alarmStatus
-    void changeAlarmState_sensorDeactivateWhileInactive_noChangeToAlarmState() {
-        securityService.changeSensorActivationStatus(sensor, false);
-        verify(securityRepository, never()).setAlarmStatus(any());
-    }
-    */
 
     @Test // 7
     @DisplayName("If the image service identifies an image containing a cat while the system is " +
@@ -240,9 +226,6 @@ public class SecurityServiceTest {
     @Test // 9
     @DisplayName("If the system is disarmed, set the status to no alarm.")
     void changeAlarmStatus_systemDisArmed_changeToAlarmStatus() {
-        //when(securityRepository.getArmingStatus()).thenReturn(ArmingStatus.DISARMED);
-        //verify(securityRepository).setAlarmStatus(AlarmStatus.NO_ALARM);
-
         securityService.setArmingStatus(ArmingStatus.DISARMED);
         ArgumentCaptor<AlarmStatus> captor = ArgumentCaptor.forClass(AlarmStatus.class);
         verify(securityRepository, atMostOnce()).setAlarmStatus(captor.capture());
@@ -276,6 +259,7 @@ public class SecurityServiceTest {
         verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
     }
 
+
     @Test
     @DisplayName("Two systems are active. Pending Alarm THe system should go to ALARM state")
     void setAlarmStatusNotChanging_sensorGetActiveAndBooleanActiveAlarmPending(){
@@ -284,6 +268,7 @@ public class SecurityServiceTest {
         verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
 
     }
+
 
     @Test
     @DisplayName("Two systems are active. THe system should go to ALARM state")
@@ -294,6 +279,7 @@ public class SecurityServiceTest {
 
     }
 
+
     @Test
     @DisplayName("Two systems are inactive No alarm state")
     void setAlarmStatus_sensorInactiveAndBooleanNotActiveAlarmIsNoAlarm(){
@@ -302,6 +288,7 @@ public class SecurityServiceTest {
         verify(securityRepository).setAlarmStatus(AlarmStatus.PENDING_ALARM);
 
     }
+
 
     @Test
     @DisplayName("Two systems are inactive. Alarm is pending")
@@ -312,6 +299,7 @@ public class SecurityServiceTest {
         verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
     }
 
+
     @Test
     @DisplayName("Two systems are inactive. Alarm is activated")
     void setAlarmStatusAlarm_sensorNotGetActiveAndBooleanNotActiveAlarmIsAlarm(){
@@ -321,6 +309,7 @@ public class SecurityServiceTest {
         verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
     }
 
+
     @Test
     @DisplayName("Handle deactivation")
     void setAlarmWhileDeactivation(){
@@ -329,11 +318,6 @@ public class SecurityServiceTest {
         securityService.changeSensorActivationStatus(sensor, false);
         verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
     }
-
-
-
-
-
 
 
     @Test

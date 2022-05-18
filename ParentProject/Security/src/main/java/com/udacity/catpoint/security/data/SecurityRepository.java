@@ -14,12 +14,7 @@ public interface SecurityRepository {
     Set<Sensor> getSensors();
     AlarmStatus getAlarmStatus();
     ArmingStatus getArmingStatus();
-
-    // TODO STATE
     Boolean getCatStatus();
-  //  Integer getNumberActiveSensorsStatus();
     void setCatStatus(Boolean catStatus) ;
-   // void setNumberActiveSensorsStatus(Integer numberActiveSensorsStatus);
-
 
 }
